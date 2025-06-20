@@ -11,11 +11,22 @@
             </h1>
             <p class="text-muted">Gérez vos projets et équipes</p>
         </div>
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_project_new') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Nouveau Projet
-            </a>
-        {% endif %}
+        <div class="d-flex gap-2">
+            {% if showArchived %}
+                <a href="{{ path('app_project_index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-list me-2"></i>Voir les projets actifs
+                </a>
+            {% else %}
+                <a href="{{ path('app_project_index', {'archived': 1}) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-archive me-2"></i>Voir les projets archivés
+                </a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_project_new') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Nouveau Projet
+                </a>
+            {% endif %}
+        </div>
     </div>
 </div>
 
@@ -28,9 +39,9 @@
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h5 class="card-title mb-0">{{ project.name }}</h5>
                             <span class="badge 
-                                {% if project.status == 'active' %}bg-success
-                                {% elseif project.status == 'completed' %}bg-info
-                                {% else %}bg-secondary{% endif %}">
+                                {% if project.status == 'active' %}bg-success text-light
+                                {% elseif project.status == 'completed' %}bg-primary text-light
+                                {% else %}bg-secondary text-light{% endif %}">
                                 {% if project.status == 'active' %}Actif
                                 {% elseif project.status == 'completed' %}Terminé
                                 {% else %}Archivé{% endif %}
@@ -89,12 +100,17 @@
 {% else %}
     <div class="text-center py-5">
         <i class="fas fa-project-diagram fa-4x text-muted mb-3"></i>
-        <h4 class="text-muted">Aucun projet</h4>
-        <p class="text-muted">Commencez par créer votre premier projet !</p>
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_project_new') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Créer un projet
-            </a>
+        {% if showArchived %}
+            <h4 class="text-muted">Aucun projet archivé</h4>
+            <p class="text-muted">Vous n'avez pas encore archivé de projet.</p>
+        {% else %}
+            <h4 class="text-muted">Aucun projet</h4>
+            <p class="text-muted">Commencez par créer votre premier projet !</p>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_project_new') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Créer un projet
+                </a>
+            {% endif %}
         {% endif %}
     </div>
 {% endif %}

@@ -38,13 +38,23 @@
                     <div class="col-md-6">
                         <p><strong>Statut :</strong> 
                             <span class="badge 
-                                {% if project.status == 'active' %}bg-success
-                                {% elseif project.status == 'completed' %}bg-info
-                                {% else %}bg-secondary{% endif %}">
+                                {% if project.status == 'active' %}bg-success text-light
+                                {% elseif project.status == 'completed' %}bg-primary text-light
+                                {% else %}bg-secondary text-light{% endif %}">
                                 {% if project.status == 'active' %}Actif
                                 {% elseif project.status == 'completed' %}Terminé
                                 {% else %}Archivé{% endif %}
                             </span>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <form method="post" action="{{ path('app_project_change_status', {'id': project.id}) }}" class="d-inline ms-2">
+                                    <select name="status" class="form-select form-select-sm d-inline w-auto" style="display:inline-block;vertical-align:middle;">
+                                        <option value="active" {% if project.status == 'active' %}selected{% endif %}>Actif</option>
+                                        <option value="completed" {% if project.status == 'completed' %}selected{% endif %}>Terminé</option>
+                                        <option value="archived" {% if project.status == 'archived' %}selected{% endif %}>Archivé</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm ms-1">Changer</button>
+                                </form>
+                            {% endif %}
                         </p>
                         <p><strong>Créé le :</strong> {{ project.createdAt|date('d/m/Y à H:i') }}</p>
                     </div>
@@ -81,13 +91,13 @@
                                     </h6>
                                     <small class="text-muted">
                                         {% if task.status == 'todo' %}
-                                            <span class="badge bg-secondary">À faire</span>
+                                            <span class="badge bg-secondary text-light">À faire</span>
                                         {% elseif task.status == 'in_progress' %}
-                                            <span class="badge bg-warning">En cours</span>
+                                            <span class="badge bg-primary text-light">En cours</span>
                                         {% elseif task.status == 'review' %}
-                                            <span class="badge bg-info">En révision</span>
+                                            <span class="badge bg-warning text-dark">En révision</span>
                                         {% else %}
-                                            <span class="badge bg-success">Terminé</span>
+                                            <span class="badge bg-success text-light">Terminé</span>
                                         {% endif %}
                                     </small>
                                 </div>

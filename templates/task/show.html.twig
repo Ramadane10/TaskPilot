@@ -8,16 +8,16 @@
         <div class="col-md-8">
             <!-- Détails de la tâche -->
             <div class="card shadow-sm border-0 rounded-3 mb-4">
-                <div class="card-header bg-primary text-white py-3 rounded-top-3">
+                <div class="card-header bg-light text-dark py-3 rounded-top-3 border-bottom">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="fs-4 fw-bold mb-0">
-                            <i class="fas fa-tasks me-2"></i>{{ task.title }}
+                            <i class="fas fa-tasks me-2 text-muted"></i>{{ task.title }}
                         </h2>
                         <div class="d-flex gap-2">
-                            <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-light btn-sm rounded-2">
+                            <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-outline-primary btn-sm rounded-2">
                                 <i class="fas fa-edit me-1"></i>Modifier
                             </a>
-                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-light btn-sm rounded-2">
+                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-secondary btn-sm rounded-2">
                                 <i class="fas fa-arrow-left me-1"></i>Retour
                             </a>
                         </div>
@@ -28,10 +28,10 @@
                         <div class="col-md-6">
                             <h5 class="text-muted fs-6 fw-medium mb-2">Statut</h5>
                             <span class="badge fs-6 px-3 py-2 
-                                {% if task.status == 'todo' %}bg-secondary
-                                {% elseif task.status == 'in_progress' %}bg-warning text-dark
-                                {% elseif task.status == 'review' %}bg-info text-dark
-                                {% elseif task.status == 'done' %}bg-success
+                                {% if task.status == 'todo' %}bg-secondary text-light
+                                {% elseif task.status == 'in_progress' %}bg-primary text-light
+                                {% elseif task.status == 'review' %}bg-warning text-dark
+                                {% elseif task.status == 'done' %}bg-success text-light
                                 {% endif %}">
                                 {% if task.status == 'todo' %}À faire
                                 {% elseif task.status == 'in_progress' %}En cours
@@ -44,12 +44,7 @@
                         </div>
                         <div class="col-md-6">
                             <h5 class="text-muted fs-6 fw-medium mb-2">Priorité</h5>
-                            <span class="badge fs-6 px-3 py-2 
-                                {% if task.priority == 'low' %}bg-success
-                                {% elseif task.priority == 'medium' %}bg-warning text-dark
-                                {% elseif task.priority == 'high' %}bg-danger
-                                {% elseif task.priority == 'urgent' %}bg-dark
-                                {% endif %}">
+                            <span class="text-muted fs-6 px-3 py-2 fw-medium">
                                 {% if task.priority == 'low' %}Faible
                                 {% elseif task.priority == 'medium' %}Moyenne
                                 {% elseif task.priority == 'high' %}Élevée
@@ -92,11 +87,11 @@
                     {% if task.dueDate %}
                     <div class="mb-4">
                         <h5 class="text-muted fs-6 fw-medium mb-2">Date d'échéance</h5>
-                        <p class="mb-0">
+                        <p class="mb-0 text-muted">
                             <i class="fas fa-calendar-alt me-1"></i>
                             {{ task.dueDate|date('d/m/Y H:i') }}
                             {% if task.dueDate < date() and task.status != 'done' %}
-                                <span class="badge bg-danger ms-2 px-3 py-2">En retard</span>
+                                <span class="fw-medium ms-2">En retard</span>
                             {% endif %}
                         </p>
                     </div>

@@ -61,6 +61,11 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $project = $task->getProject();
+            if ($project && $project->getStatus() !== 'active') {
+                $this->addFlash('warning', 'Vous ne pouvez ajouter une tâche qu\'à un projet actif.');
+                return $this->redirectToRoute('app_task_index');
+            }
             $entityManager->persist($task);
             $entityManager->flush();
 

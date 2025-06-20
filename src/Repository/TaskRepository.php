@@ -155,6 +155,31 @@ class TaskRepository extends ServiceEntityRepository
                  ->getResult();
     }
 
+    /**
+     * Get statistics for a user's tasks.
+     * @param User $user
+     * @return array
+     */
+    public function getTaskStatsForUser(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('
+                COUNT(t.id) as total,
+                SUM(CASE WHEN t.status = :todo THEN 1 ELSE 0 END) as todo,
+                SUM(CASE WHEN t.status = :in_progress THEN 1 ELSE 0 END) as in_progress,
+                SUM(CASE WHEN t.status = :review THEN 1 ELSE 0 END) as review,
+                SUM(CASE WHEN t.status = :done THEN 1 ELSE 0 END) as done
+            ')
+            ->where('t.assignedTo = :user')
+            ->setParameter('user', $user)
+            ->setParameter('todo', 'todo')
+            ->setParameter('in_progress', 'in_progress')
+            ->setParameter('review', 'review')
+            ->setParameter('done', 'done')
+            ->getQuery()
+            ->getSingleResult();
+    }
+
 //    /**
 //     * @return Task[] Returns an array of Task objects
 //     */

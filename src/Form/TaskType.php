@@ -84,7 +84,8 @@ class TaskType extends AbstractType
                 'label' => 'Assigné à',
                 'attr' => [
                     'class' => 'form-select'
-                ]
+                ],
+                'choices' => $options['available_users'] ?? []
             ])
         ;
     }
@@ -93,6 +94,7 @@ class TaskType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Task::class,
+            'available_users' => []
         ]);
     }
 } 

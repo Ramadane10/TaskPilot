@@ -7,6 +7,8 @@ use App\Entity\Task;
 use App\Form\CommentTypeForm;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
+use App\Repository\ProjectRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,22 +52,61 @@ class TaskController extends AbstractController
     }
 
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ProjectRepository $projectRepository, UserRepository $userRepository): Response
     {
         $task = new Task();
         $task->setCreatedAt(new \DateTime());
         $task->setStatus('todo');
         $task->setPriority('medium');
         
-        $form = $this->createForm(TaskType::class, $task);
+        // Récupérer les projets auxquels l'utilisateur a accès
+        $user = $this->getUser();
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $availableProjects = $projectRepository->findProjects(false);
+        } else {
+            $availableProjects = $projectRepository->findProjects(false, $user);
+        }
+        
+        // Récupérer le projet sélectionné (si présent dans la requête)
+        $selectedProjectId = $request->query->get('project');
+        $selectedProject = null;
+        $availableUsers = [];
+        
+        if ($selectedProjectId) {
+            $selectedProject = $projectRepository->find($selectedProjectId);
+            if ($selectedProject && $selectedProject->getMembers()) {
+                $availableUsers = $selectedProject->getMembers()->toArray();
+            }
+        } else {
+            // Si aucun projet n'est sélectionné, afficher tous les utilisateurs
+            $availableUsers = $userRepository->findAll();
+        }
+        
+        $form = $this->createForm(TaskType::class, $task, [
+            'available_users' => $availableUsers
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $project = $task->getProject();
+            $assignedUser = $task->getAssignedTo();
+            
+            // Vérifier que le projet est actif
             if ($project && $project->getStatus() !== 'active') {
                 $this->addFlash('warning', 'Vous ne pouvez ajouter une tâche qu\'à un projet actif.');
                 return $this->redirectToRoute('app_task_index');
             }
+            
+            // Vérifier que l'utilisateur assigné est membre du projet
+            if ($assignedUser && $project && !$project->getMembers()->contains($assignedUser)) {
+                $this->addFlash('danger', 'L\'utilisateur assigné doit être membre du projet sélectionné.');
+                return $this->render('task/new.html.twig', [
+                    'task' => $task,
+                    'form' => $form,
+                    'availableProjects' => $availableProjects,
+                ]);
+            }
+            
             $entityManager->persist($task);
             $entityManager->flush();
 
@@ -76,6 +117,7 @@ class TaskController extends AbstractController
         return $this->render('task/new.html.twig', [
             'task' => $task,
             'form' => $form,
+            'availableProjects' => $availableProjects,
         ]);
     }
 
@@ -105,10 +147,27 @@ class TaskController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cette tâche.');
         }
         
-        $form = $this->createForm(TaskType::class, $task);
+        // Récupérer les membres du projet pour l'assignation
+        $project = $task->getProject();
+        $availableUsers = $project ? $project->getMembers()->toArray() : [];
+        
+        $form = $this->createForm(TaskType::class, $task, [
+            'available_users' => $availableUsers
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $assignedUser = $task->getAssignedTo();
+            
+            // Vérifier que l'utilisateur assigné est membre du projet
+            if ($assignedUser && $project && !$project->getMembers()->contains($assignedUser)) {
+                $this->addFlash('danger', 'L\'utilisateur assigné doit être membre du projet.');
+                return $this->render('task/edit.html.twig', [
+                    'task' => $task,
+                    'form' => $form,
+                ]);
+            }
+            
             $task->setUpdatedAt(new \DateTime());
             $entityManager->flush();
 

@@ -95,4 +95,32 @@ final class CommentController extends AbstractController
         
         return $this->redirectToRoute('app_task_show', ['id' => $taskId]);
     }
+
+    #[Route('/{id}/reply', name: 'app_comment_reply', methods: ['POST'])]
+    public function reply(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier que l'utilisateur a accès à la tâche
+        if (!$this->isGranted('ROLE_ADMIN') && $comment->getTask()->getAssignedTo() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette tâche.');
+        }
+
+        $content = $request->request->get('content');
+        if (empty(trim($content))) {
+            $this->addFlash('danger', 'Le contenu du commentaire ne peut pas être vide.');
+            return $this->redirectToRoute('app_task_show', ['id' => $comment->getTask()->getId()]);
+        }
+
+        $reply = new Comment();
+        $reply->setContent($content);
+        $reply->setAuthor($this->getUser());
+        $reply->setTask($comment->getTask());
+        $reply->setParent($comment);
+        $reply->setCreatedAt(new \DateTime());
+
+        $entityManager->persist($reply);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Réponse ajoutée avec succès !');
+        return $this->redirectToRoute('app_task_show', ['id' => $comment->getTask()->getId()]);
+    }
 }

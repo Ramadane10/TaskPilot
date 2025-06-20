@@ -17,6 +17,58 @@
     </div>
 </div>
 
+<!-- Filtres et statistiques -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="btn-group me-2" role="group">
+            <a href="{{ path('app_task_index') }}" class="btn btn-outline-primary {{ app.request.query.get('priority') is null and app.request.query.get('due') is null ? 'active' : '' }}">
+                <i class="fas fa-list me-1"></i>Toutes
+            </a>
+            <a href="{{ path('app_task_index', {'priority': 'urgent'}) }}" class="btn btn-outline-dark {{ app.request.query.get('priority') == 'urgent' ? 'active' : '' }}">
+                <i class="fas fa-exclamation-triangle me-1"></i>Urgentes
+            </a>
+            <a href="{{ path('app_task_index', {'priority': 'high'}) }}" class="btn btn-outline-danger {{ app.request.query.get('priority') == 'high' ? 'active' : '' }}">
+                <i class="fas fa-arrow-up me-1"></i>Élevées
+            </a>
+            <a href="{{ path('app_task_index', {'priority': 'medium'}) }}" class="btn btn-outline-warning {{ app.request.query.get('priority') == 'medium' ? 'active' : '' }}">
+                <i class="fas fa-minus me-1"></i>Moyennes
+            </a>
+            <a href="{{ path('app_task_index', {'priority': 'low'}) }}" class="btn btn-outline-success {{ app.request.query.get('priority') == 'low' ? 'active' : '' }}">
+                <i class="fas fa-arrow-down me-1"></i>Faibles
+            </a>
+        </div>
+        
+        <div class="btn-group" role="group">
+            <a href="{{ path('app_task_index', {'due': 'overdue'}) }}" class="btn btn-outline-danger {{ app.request.query.get('due') == 'overdue' ? 'active' : '' }}">
+                <i class="fas fa-exclamation-circle me-1"></i>En retard
+            </a>
+            <a href="{{ path('app_task_index', {'due': 'today'}) }}" class="btn btn-outline-warning {{ app.request.query.get('due') == 'today' ? 'active' : '' }}">
+                <i class="fas fa-calendar-day me-1"></i>Aujourd'hui
+            </a>
+            <a href="{{ path('app_task_index', {'due': 'week'}) }}" class="btn btn-outline-info {{ app.request.query.get('due') == 'week' ? 'active' : '' }}">
+                <i class="fas fa-calendar-week me-1"></i>Cette semaine
+            </a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="d-flex justify-content-end">
+            <div class="text-end">
+                <small class="text-muted">Tâches affichées : <strong>{{ tasks|length }}</strong></small>
+                {% if tasks|length > 0 %}
+                    <br><small class="text-muted">
+                        {% set urgentCount = tasks|filter(t => t.priority == 'urgent')|length %}
+                        {% set highCount = tasks|filter(t => t.priority == 'high')|length %}
+                        {% set overdueCount = tasks|filter(t => t.dueDate and t.dueDate < date() and t.status != 'done')|length %}
+                        {% if urgentCount > 0 %}<span class="text-dark">⚫ {{ urgentCount }} urgentes</span>{% endif %}
+                        {% if highCount > 0 %}<span class="text-danger">🔴 {{ highCount }} élevées</span>{% endif %}
+                        {% if overdueCount > 0 %}<span class="text-danger">⏰ {{ overdueCount }} en retard</span>{% endif %}
+                    </small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {% if tasks|length > 0 %}
     <div class="row">
         {% for task in tasks %}
@@ -46,8 +98,19 @@
                                 <i class="fas fa-calendar me-1"></i>Créée le {{ task.createdAt|date('d/m/Y') }}
                             </small>
                             {% if task.dueDate %}
-                                <br><small class="text-muted">
+                                <br><small class="
+                                    {% if task.dueDate < date() and task.status != 'done' %}text-danger fw-bold
+                                    {% elseif task.dueDate|date('U') < date('U') + 86400 and task.status != 'done' %}text-warning fw-bold
+                                    {% elseif task.dueDate|date('U') < date('U') + 604800 and task.status != 'done' %}text-info
+                                    {% else %}text-muted{% endif %}">
                                     <i class="fas fa-clock me-1"></i>Échéance : {{ task.dueDate|date('d/m/Y') }}
+                                    {% if task.dueDate < date() and task.status != 'done' %}
+                                        <span class="badge bg-danger ms-1">En retard !</span>
+                                    {% elseif task.dueDate|date('U') < date('U') + 86400 and task.status != 'done' %}
+                                        <span class="badge bg-warning ms-1">Aujourd'hui</span>
+                                    {% elseif task.dueDate|date('U') < date('U') + 604800 and task.status != 'done' %}
+                                        <span class="badge bg-info ms-1">Cette semaine</span>
+                                    {% endif %}
                                 </small>
                             {% endif %}
                         </div>

@@ -30,6 +30,53 @@ class TaskRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Task[] Returns an array of Task objects filtered by priority
+     */
+    public function findByPriority(string $priority): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.priority = :priority')
+            ->setParameter('priority', $priority)
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Task[] Returns an array of Task objects assigned to a user and filtered by priority
+     */
+    public function findByUserAndPriority(User $user, string $priority): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.assignedTo = :user')
+            ->andWhere('t.priority = :priority')
+            ->setParameter('user', $user)
+            ->setParameter('priority', $priority)
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Task[] Returns an array of Task objects ordered by priority (urgent first)
+     */
+    public function findByAssignedToOrderedByPriority(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.assignedTo = :user')
+            ->setParameter('user', $user)
+            ->orderBy('CASE t.priority 
+                WHEN \'urgent\' THEN 1 
+                WHEN \'high\' THEN 2 
+                WHEN \'medium\' THEN 3 
+                WHEN \'low\' THEN 4 
+                ELSE 5 END', 'ASC')
+            ->addOrderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Task[] Returns an array of Task objects
 //     */

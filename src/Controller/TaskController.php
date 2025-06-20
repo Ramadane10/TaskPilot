@@ -19,15 +19,29 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TaskController extends AbstractController
 {
     #[Route('/', name: 'app_task_index', methods: ['GET'])]
-    public function index(TaskRepository $taskRepository): Response
+    public function index(Request $request, TaskRepository $taskRepository): Response
     {
         $user = $this->getUser();
+        $priority = $request->query->get('priority');
+        $due = $request->query->get('due');
         
         // Si admin, voir toutes les tâches, sinon seulement celles assignées à l'utilisateur
         if ($this->isGranted('ROLE_ADMIN')) {
-            $tasks = $taskRepository->findAll();
+            if ($priority) {
+                $tasks = $taskRepository->findByPriority($priority);
+            } elseif ($due) {
+                $tasks = $taskRepository->findByDueDate($due);
+            } else {
+                $tasks = $taskRepository->findAll();
+            }
         } else {
-            $tasks = $taskRepository->findByAssignedTo($user);
+            if ($priority) {
+                $tasks = $taskRepository->findByUserAndPriority($user, $priority);
+            } elseif ($due) {
+                $tasks = $taskRepository->findByUserAndDueDate($user, $due);
+            } else {
+                $tasks = $taskRepository->findByAssignedTo($user);
+            }
         }
         
         return $this->render('task/index.html.twig', [

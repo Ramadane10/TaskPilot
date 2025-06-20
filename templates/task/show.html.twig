@@ -39,6 +39,40 @@
                                 {% elseif task.status == 'done' %}Terminé
                                 {% endif %}
                             </span>
+                            
+                            <!-- Boutons d'action rapide pour le statut -->
+                            {% if task.status != 'done' %}
+                                <div class="mt-2">
+                                    <small class="text-muted d-block mb-1">Changer le statut :</small>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        {% if task.status == 'todo' %}
+                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'in_progress'}) }}" style="display: inline;">
+                                                <button type="submit" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-play me-1"></i>Démarrer
+                                                </button>
+                                            </form>
+                                        {% elseif task.status == 'in_progress' %}
+                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'review'}) }}" style="display: inline;">
+                                                <button type="submit" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-eye me-1"></i>En révision
+                                                </button>
+                                            </form>
+                                        {% elseif task.status == 'review' %}
+                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'done'}) }}" style="display: inline;">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check me-1"></i>Terminer
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="mt-2">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-trophy me-1"></i>Tâche terminée !
+                                    </span>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             <h5 class="text-muted mb-2">Priorité</h5>
@@ -111,6 +145,76 @@
                             </small>
                         </p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Section Commentaires -->
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2"></i>Commentaires ({{ task.comments|length }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Formulaire d'ajout de commentaire -->
+                    <div class="mb-4">
+                        {{ form_start(commentForm, {'action': path('app_comment_new', {'taskId': task.id}), 'method': 'POST'}) }}
+                            <div class="mb-3">
+                                {{ form_label(commentForm.content, 'Ajouter un commentaire', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(commentForm.content, {'attr': {'class': 'form-control', 'rows': '3', 'placeholder': 'Écrivez votre commentaire...'}}) }}
+                                {{ form_errors(commentForm.content) }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Publier le commentaire
+                            </button>
+                        {{ form_end(commentForm) }}
+                    </div>
+
+                    <!-- Liste des commentaires -->
+                    {% if task.comments|length > 0 %}
+                        <div class="comments-list">
+                            {% for comment in task.comments %}
+                                <div class="comment-item border-bottom pb-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">{{ comment.author.firstName }} {{ comment.author.lastName }}</h6>
+                                                <small class="text-muted">{{ comment.createdAt|date('d/m/Y à H:i') }}</small>
+                                            </div>
+                                        </div>
+                                        {% if app.user == comment.author or is_granted('ROLE_ADMIN') %}
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{{ path('app_comment_edit', {'id': comment.id}) }}">
+                                                        <i class="fas fa-edit me-2"></i>Modifier
+                                                    </a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="{{ path('app_comment_delete', {'id': comment.id}) }}" 
+                                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')">
+                                                        <i class="fas fa-trash me-2"></i>Supprimer
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="comment-content">
+                                        <p class="mb-0">{{ comment.content|nl2br }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <p>Aucun commentaire pour le moment.<br>Soyez le premier à commenter !</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

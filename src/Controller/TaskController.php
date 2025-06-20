@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Task;
+use App\Form\CommentTypeForm;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,8 +68,13 @@ class TaskController extends AbstractController
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette tâche.');
         }
         
+        // Créer le formulaire de commentaire
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentTypeForm::class, $comment);
+        
         return $this->render('task/show.html.twig', [
             'task' => $task,
+            'commentForm' => $commentForm,
         ]);
     }
 

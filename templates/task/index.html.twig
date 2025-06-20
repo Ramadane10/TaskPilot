@@ -80,6 +80,31 @@
                                 <i class="fas fa-eye me-1"></i>Voir
                             </a>
                             <div>
+                                <!-- Boutons d'action rapide pour le statut -->
+                                {% if task.status != 'done' %}
+                                    <div class="btn-group btn-group-sm me-2" role="group">
+                                        {% if task.status == 'todo' %}
+                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'in_progress'}) }}" style="display: inline;">
+                                                <button type="submit" class="btn btn-warning btn-sm" title="Démarrer la tâche">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </form>
+                                        {% elseif task.status == 'in_progress' %}
+                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'review'}) }}" style="display: inline;">
+                                                <button type="submit" class="btn btn-info btn-sm" title="Mettre en révision">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </form>
+                                        {% elseif task.status == 'review' %}
+                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'done'}) }}" style="display: inline;">
+                                                <button type="submit" class="btn btn-success btn-sm" title="Terminer la tâche">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                
                                 <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-outline-warning btn-sm">
                                     <i class="fas fa-edit me-1"></i>Modifier
                                 </a>

@@ -77,6 +77,84 @@ class TaskRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Task[] Returns an array of Task objects filtered by due date
+     */
+    public function findByDueDate(string $dueFilter): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.dueDate IS NOT NULL')
+            ->andWhere('t.status != :done')
+            ->setParameter('done', 'done');
+
+        switch ($dueFilter) {
+            case 'overdue':
+                $qb->andWhere('t.dueDate < :now')
+                   ->setParameter('now', new \DateTime());
+                break;
+            case 'today':
+                $today = new \DateTime();
+                $qb->andWhere('t.dueDate >= :start')
+                   ->andWhere('t.dueDate < :end')
+                   ->setParameter('start', $today->format('Y-m-d 00:00:00'))
+                   ->setParameter('end', $today->format('Y-m-d 23:59:59'));
+                break;
+            case 'week':
+                $today = new \DateTime();
+                $weekEnd = clone $today;
+                $weekEnd->modify('+7 days');
+                $qb->andWhere('t.dueDate >= :start')
+                   ->andWhere('t.dueDate < :end')
+                   ->setParameter('start', $today->format('Y-m-d 00:00:00'))
+                   ->setParameter('end', $weekEnd->format('Y-m-d 23:59:59'));
+                break;
+        }
+
+        return $qb->orderBy('t.dueDate', 'ASC')
+                 ->getQuery()
+                 ->getResult();
+    }
+
+    /**
+     * @return Task[] Returns an array of Task objects assigned to a user and filtered by due date
+     */
+    public function findByUserAndDueDate(User $user, string $dueFilter): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.assignedTo = :user')
+            ->andWhere('t.dueDate IS NOT NULL')
+            ->andWhere('t.status != :done')
+            ->setParameter('user', $user)
+            ->setParameter('done', 'done');
+
+        switch ($dueFilter) {
+            case 'overdue':
+                $qb->andWhere('t.dueDate < :now')
+                   ->setParameter('now', new \DateTime());
+                break;
+            case 'today':
+                $today = new \DateTime();
+                $qb->andWhere('t.dueDate >= :start')
+                   ->andWhere('t.dueDate < :end')
+                   ->setParameter('start', $today->format('Y-m-d 00:00:00'))
+                   ->setParameter('end', $today->format('Y-m-d 23:59:59'));
+                break;
+            case 'week':
+                $today = new \DateTime();
+                $weekEnd = clone $today;
+                $weekEnd->modify('+7 days');
+                $qb->andWhere('t.dueDate >= :start')
+                   ->andWhere('t.dueDate < :end')
+                   ->setParameter('start', $today->format('Y-m-d 00:00:00'))
+                   ->setParameter('end', $weekEnd->format('Y-m-d 23:59:59'));
+                break;
+        }
+
+        return $qb->orderBy('t.dueDate', 'ASC')
+                 ->getQuery()
+                 ->getResult();
+    }
+
 //    /**
 //     * @return Task[] Returns an array of Task objects
 //     */

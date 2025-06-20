@@ -11,59 +11,152 @@
             </h1>
             <p class="text-muted">Gérez vos tâches et suivez leur progression</p>
         </div>
-        <a href="{{ path('app_task_new') }}" class="btn btn-success">
-            <i class="fas fa-plus me-2"></i>Nouvelle Tâche
-        </a>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="collapse" data-bs-target="#helpSection">
+                <i class="fas fa-question-circle me-1"></i>Aide
+            </button>
+            <a href="{{ path('app_task_new') }}" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Nouvelle Tâche
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Section d'aide -->
+<div class="collapse mb-3" id="helpSection">
+    <div class="card border-info">
+        <div class="card-header bg-info text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-lightbulb me-2"></i>Guide d'utilisation des filtres
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-info">🎯 Filtres par priorité</h6>
+                    <ul class="list-unstyled small">
+                        <li><span class="badge bg-dark me-2">Urgentes</span> Tâches critiques nécessitant une attention immédiate</li>
+                        <li><span class="badge bg-danger me-2">Élevées</span> Tâches importantes à traiter en priorité</li>
+                        <li><span class="badge bg-warning me-2">Moyennes</span> Tâches normales sans urgence particulière</li>
+                        <li><span class="badge bg-success me-2">Faibles</span> Tâches de faible priorité, à traiter en dernier</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-info">⏰ Filtres par échéance</h6>
+                    <ul class="list-unstyled small">
+                        <li><span class="badge bg-danger me-2">En retard</span> Tâches dont l'échéance est dépassée</li>
+                        <li><span class="badge bg-warning me-2">Aujourd'hui</span> Tâches à terminer aujourd'hui</li>
+                        <li><span class="badge bg-info me-2">Cette semaine</span> Tâches à terminer dans les 7 jours</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-3 p-3 bg-light rounded">
+                <strong>💡 Conseil :</strong> Utilisez les filtres pour organiser votre travail. Commencez par les tâches "En retard" puis "Urgentes" pour optimiser votre productivité.
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Filtres et statistiques -->
-<div class="row mb-4">
-    <div class="col-md-8">
-        <div class="btn-group me-2" role="group">
-            <a href="{{ path('app_task_index') }}" class="btn btn-outline-primary {{ app.request.query.get('priority') is null and app.request.query.get('due') is null ? 'active' : '' }}">
-                <i class="fas fa-list me-1"></i>Toutes
-            </a>
-            <a href="{{ path('app_task_index', {'priority': 'urgent'}) }}" class="btn btn-outline-dark {{ app.request.query.get('priority') == 'urgent' ? 'active' : '' }}">
-                <i class="fas fa-exclamation-triangle me-1"></i>Urgentes
-            </a>
-            <a href="{{ path('app_task_index', {'priority': 'high'}) }}" class="btn btn-outline-danger {{ app.request.query.get('priority') == 'high' ? 'active' : '' }}">
-                <i class="fas fa-arrow-up me-1"></i>Élevées
-            </a>
-            <a href="{{ path('app_task_index', {'priority': 'medium'}) }}" class="btn btn-outline-warning {{ app.request.query.get('priority') == 'medium' ? 'active' : '' }}">
-                <i class="fas fa-minus me-1"></i>Moyennes
-            </a>
-            <a href="{{ path('app_task_index', {'priority': 'low'}) }}" class="btn btn-outline-success {{ app.request.query.get('priority') == 'low' ? 'active' : '' }}">
-                <i class="fas fa-arrow-down me-1"></i>Faibles
-            </a>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row">
+            <!-- Filtres par priorité -->
+            <div class="col-md-6 mb-3">
+                <h6 class="text-muted mb-2">
+                    <i class="fas fa-flag me-1"></i>Filtrer par priorité
+                </h6>
+                <div class="btn-group btn-group-sm w-100" role="group">
+                    <a href="{{ path('app_task_index') }}" class="btn btn-outline-primary {{ app.request.query.get('priority') is null and app.request.query.get('due') is null ? 'active' : '' }}">
+                        <i class="fas fa-list me-1"></i>Toutes
+                    </a>
+                    <a href="{{ path('app_task_index', {'priority': 'urgent'}) }}" class="btn btn-outline-dark {{ app.request.query.get('priority') == 'urgent' ? 'active' : '' }}" title="Tâches critiques nécessitant une attention immédiate">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Urgentes
+                    </a>
+                    <a href="{{ path('app_task_index', {'priority': 'high'}) }}" class="btn btn-outline-danger {{ app.request.query.get('priority') == 'high' ? 'active' : '' }}" title="Tâches importantes à traiter en priorité">
+                        <i class="fas fa-arrow-up me-1"></i>Élevées
+                    </a>
+                    <a href="{{ path('app_task_index', {'priority': 'medium'}) }}" class="btn btn-outline-warning {{ app.request.query.get('priority') == 'medium' ? 'active' : '' }}" title="Tâches normales sans urgence particulière">
+                        <i class="fas fa-minus me-1"></i>Moyennes
+                    </a>
+                    <a href="{{ path('app_task_index', {'priority': 'low'}) }}" class="btn btn-outline-success {{ app.request.query.get('priority') == 'low' ? 'active' : '' }}" title="Tâches de faible priorité, à traiter en dernier">
+                        <i class="fas fa-arrow-down me-1"></i>Faibles
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filtres par échéance -->
+            <div class="col-md-6 mb-3">
+                <h6 class="text-muted mb-2">
+                    <i class="fas fa-calendar-alt me-1"></i>Filtrer par échéance
+                </h6>
+                <div class="btn-group btn-group-sm w-100" role="group">
+                    <a href="{{ path('app_task_index', {'due': 'overdue'}) }}" class="btn btn-outline-danger {{ app.request.query.get('due') == 'overdue' ? 'active' : '' }}" title="Tâches dont l'échéance est dépassée">
+                        <i class="fas fa-exclamation-circle me-1"></i>En retard
+                    </a>
+                    <a href="{{ path('app_task_index', {'due': 'today'}) }}" class="btn btn-outline-warning {{ app.request.query.get('due') == 'today' ? 'active' : '' }}" title="Tâches à terminer aujourd'hui">
+                        <i class="fas fa-calendar-day me-1"></i>Aujourd'hui
+                    </a>
+                    <a href="{{ path('app_task_index', {'due': 'week'}) }}" class="btn btn-outline-info {{ app.request.query.get('due') == 'week' ? 'active' : '' }}" title="Tâches à terminer cette semaine">
+                        <i class="fas fa-calendar-week me-1"></i>Cette semaine
+                    </a>
+                </div>
+            </div>
         </div>
-        
-        <div class="btn-group" role="group">
-            <a href="{{ path('app_task_index', {'due': 'overdue'}) }}" class="btn btn-outline-danger {{ app.request.query.get('due') == 'overdue' ? 'active' : '' }}">
-                <i class="fas fa-exclamation-circle me-1"></i>En retard
-            </a>
-            <a href="{{ path('app_task_index', {'due': 'today'}) }}" class="btn btn-outline-warning {{ app.request.query.get('due') == 'today' ? 'active' : '' }}">
-                <i class="fas fa-calendar-day me-1"></i>Aujourd'hui
-            </a>
-            <a href="{{ path('app_task_index', {'due': 'week'}) }}" class="btn btn-outline-info {{ app.request.query.get('due') == 'week' ? 'active' : '' }}">
-                <i class="fas fa-calendar-week me-1"></i>Cette semaine
-            </a>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="d-flex justify-content-end">
-            <div class="text-end">
-                <small class="text-muted">Tâches affichées : <strong>{{ tasks|length }}</strong></small>
-                {% if tasks|length > 0 %}
-                    <br><small class="text-muted">
-                        {% set urgentCount = tasks|filter(t => t.priority == 'urgent')|length %}
-                        {% set highCount = tasks|filter(t => t.priority == 'high')|length %}
-                        {% set overdueCount = tasks|filter(t => t.dueDate and t.dueDate < date() and t.status != 'done')|length %}
-                        {% if urgentCount > 0 %}<span class="text-dark">⚫ {{ urgentCount }} urgentes</span>{% endif %}
-                        {% if highCount > 0 %}<span class="text-danger">🔴 {{ highCount }} élevées</span>{% endif %}
-                        {% if overdueCount > 0 %}<span class="text-danger">⏰ {{ overdueCount }} en retard</span>{% endif %}
-                    </small>
-                {% endif %}
+
+        <!-- Statistiques et informations -->
+        <div class="row">
+            <div class="col-12">
+                <hr class="my-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4">
+                            <span class="badge bg-primary fs-6">{{ tasks|length }}</span>
+                            <small class="text-muted ms-1">tâche{{ tasks|length > 1 ? 's' : '' }} affichée{{ tasks|length > 1 ? 's' : '' }}</small>
+                        </div>
+                        
+                        {% if tasks|length > 0 %}
+                            <div class="d-flex gap-3">
+                                {% set urgentCount = tasks|filter(t => t.priority == 'urgent')|length %}
+                                {% set highCount = tasks|filter(t => t.priority == 'high')|length %}
+                                {% set overdueCount = tasks|filter(t => t.dueDate and t.dueDate|date('U') < "now"|date('U') and t.status != 'done')|length %}
+                                
+                                {% if urgentCount > 0 %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-dark me-1">{{ urgentCount }}</span>
+                                        <small class="text-muted">urgente{{ urgentCount > 1 ? 's' : '' }}</small>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if highCount > 0 %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-danger me-1">{{ highCount }}</span>
+                                        <small class="text-muted">élevée{{ highCount > 1 ? 's' : '' }}</small>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if overdueCount > 0 %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-danger me-1">{{ overdueCount }}</span>
+                                        <small class="text-muted">en retard</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Actions rapides -->
+                    <div class="d-flex gap-2">
+                        {% if app.request.query.get('priority') or app.request.query.get('due') %}
+                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Effacer les filtres
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('app_task_new') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus me-1"></i>Nouvelle tâche
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -98,17 +191,22 @@
                                 <i class="fas fa-calendar me-1"></i>Créée le {{ task.createdAt|date('d/m/Y') }}
                             </small>
                             {% if task.dueDate %}
+                                {% set now = "now"|date('U') %}
+                                {% set dueDate = task.dueDate|date('U') %}
+                                {% set oneDay = 86400 %}
+                                {% set oneWeek = 604800 %}
+                                
                                 <br><small class="
-                                    {% if task.dueDate < date() and task.status != 'done' %}text-danger fw-bold
-                                    {% elseif task.dueDate|date('U') < date('U') + 86400 and task.status != 'done' %}text-warning fw-bold
-                                    {% elseif task.dueDate|date('U') < date('U') + 604800 and task.status != 'done' %}text-info
+                                    {% if dueDate < now and task.status != 'done' %}text-danger fw-bold
+                                    {% elseif dueDate < now + oneDay and task.status != 'done' %}text-warning fw-bold
+                                    {% elseif dueDate < now + oneWeek and task.status != 'done' %}text-info
                                     {% else %}text-muted{% endif %}">
                                     <i class="fas fa-clock me-1"></i>Échéance : {{ task.dueDate|date('d/m/Y') }}
-                                    {% if task.dueDate < date() and task.status != 'done' %}
+                                    {% if dueDate < now and task.status != 'done' %}
                                         <span class="badge bg-danger ms-1">En retard !</span>
-                                    {% elseif task.dueDate|date('U') < date('U') + 86400 and task.status != 'done' %}
+                                    {% elseif dueDate < now + oneDay and task.status != 'done' %}
                                         <span class="badge bg-warning ms-1">Aujourd'hui</span>
-                                    {% elseif task.dueDate|date('U') < date('U') + 604800 and task.status != 'done' %}
+                                    {% elseif dueDate < now + oneWeek and task.status != 'done' %}
                                         <span class="badge bg-info ms-1">Cette semaine</span>
                                     {% endif %}
                                 </small>

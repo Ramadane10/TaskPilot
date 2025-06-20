@@ -13,59 +13,59 @@
         
         {% block stylesheets %}{% endblock %}
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="{{ path('app_home') }}">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold" href="{{ path('app_home') }}">
                     <i class="fas fa-rocket me-2"></i>TaskPilot
                 </a>
                 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     {% if app.user %}
-                        <ul class="navbar-nav me-auto">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_dashboard') }}">
+                                <a class="nav-link fw-medium px-3" href="{{ path('app_dashboard') }}">
                                     <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_project_index') }}">
+                                <a class="nav-link fw-medium px-3" href="{{ path('app_project_index') }}">
                                     <i class="fas fa-project-diagram me-1"></i>Projets
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_task_index') }}">
+                                <a class="nav-link fw-medium px-3" href="{{ path('app_task_index') }}">
                                     <i class="fas fa-tasks me-1"></i>Tâches
                                 </a>
                             </li>
                         </ul>
                         
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav ms-auto">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle fw-medium px-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user me-1"></i>{{ app.user.firstName }} {{ app.user.lastName }}
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i>Profil</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li><a class="dropdown-item py-2" href="#"><i class="fas fa-user-cog me-2"></i>Profil</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+                                    <li><a class="dropdown-item py-2" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
                                 </ul>
                             </li>
                         </ul>
                     {% else %}
-                        <ul class="navbar-nav ms-auto">
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_login') }}">
+                                <a class="nav-link fw-medium px-3" href="{{ path('app_login') }}">
                                     <i class="fas fa-sign-in-alt me-1"></i>Connexion
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_register') }}">
+                                <a class="nav-link fw-medium px-3" href="{{ path('app_register') }}">
                                     <i class="fas fa-user-plus me-1"></i>Inscription
                                 </a>
                             </li>
@@ -76,26 +76,32 @@
         </nav>
 
         <!-- Messages Flash -->
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+        <div class="container mt-4">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                        <i class="fas fa-{{ label == 'success' ? 'check-circle' : 'exclamation-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
+        </div>
 
         <!-- Contenu principal -->
-        <main class="container my-4">
+        <main class="container flex-grow-1 py-5">
             {% block body %}{% endblock %}
         </main>
 
         <!-- Footer -->
-        <footer class="bg-light py-4 mt-5">
+        <footer class="bg-light py-4 mt-auto border-top">
             <div class="container text-center">
-                <p class="text-muted mb-0">
+                <p class="text-muted mb-2">
                     <i class="fas fa-code me-1"></i>TaskPilot - Application de Gestion de Projets
                 </p>
+                <div class="small text-muted">
+                    &copy; {{ 'now'|date('Y') }} TaskPilot. Tous droits réservés.
+                </div>
             </div>
         </footer>
 

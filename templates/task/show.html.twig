@@ -1,36 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de la tâche{% endblock %}
+{% block title %}Détails de la tâche - TaskPilot{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="row">
+<div class="container py-5">
+    <div class="row g-4">
         <div class="col-md-8">
             <!-- Détails de la tâche -->
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-3">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">
+                        <h2 class="fs-4 fw-bold mb-0">
                             <i class="fas fa-tasks me-2"></i>{{ task.title }}
                         </h2>
                         <div class="d-flex gap-2">
-                            <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-light btn-sm">
+                            <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-light btn-sm rounded-2">
                                 <i class="fas fa-edit me-1"></i>Modifier
                             </a>
-                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-light btn-sm">
+                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-light btn-sm rounded-2">
                                 <i class="fas fa-arrow-left me-1"></i>Retour
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
+                <div class="card-body p-3 p-md-4">
+                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <h5 class="text-muted mb-2">Statut</h5>
-                            <span class="badge fs-6 
+                            <h5 class="text-muted fs-6 fw-medium mb-2">Statut</h5>
+                            <span class="badge fs-6 px-3 py-2 
                                 {% if task.status == 'todo' %}bg-secondary
-                                {% elseif task.status == 'in_progress' %}bg-warning
-                                {% elseif task.status == 'review' %}bg-info
+                                {% elseif task.status == 'in_progress' %}bg-warning text-dark
+                                {% elseif task.status == 'review' %}bg-info text-dark
                                 {% elseif task.status == 'done' %}bg-success
                                 {% endif %}">
                                 {% if task.status == 'todo' %}À faire
@@ -40,45 +40,13 @@
                                 {% endif %}
                             </span>
                             
-                            <!-- Boutons d'action rapide pour le statut -->
-                            {% if task.status != 'done' %}
-                                <div class="mt-2">
-                                    <small class="text-muted d-block mb-1">Changer le statut :</small>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        {% if task.status == 'todo' %}
-                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'in_progress'}) }}" style="display: inline;">
-                                                <button type="submit" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-play me-1"></i>Démarrer
-                                                </button>
-                                            </form>
-                                        {% elseif task.status == 'in_progress' %}
-                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'review'}) }}" style="display: inline;">
-                                                <button type="submit" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-eye me-1"></i>En révision
-                                                </button>
-                                            </form>
-                                        {% elseif task.status == 'review' %}
-                                            <form method="post" action="{{ path('app_task_update_status', {'id': task.id, 'status': 'done'}) }}" style="display: inline;">
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-check me-1"></i>Terminer
-                                                </button>
-                                            </form>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% else %}
-                                <div class="mt-2">
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-trophy me-1"></i>Tâche terminée !
-                                    </span>
-                                </div>
-                            {% endif %}
+                            
                         </div>
                         <div class="col-md-6">
-                            <h5 class="text-muted mb-2">Priorité</h5>
-                            <span class="badge fs-6 
+                            <h5 class="text-muted fs-6 fw-medium mb-2">Priorité</h5>
+                            <span class="badge fs-6 px-3 py-2 
                                 {% if task.priority == 'low' %}bg-success
-                                {% elseif task.priority == 'medium' %}bg-warning
+                                {% elseif task.priority == 'medium' %}bg-warning text-dark
                                 {% elseif task.priority == 'high' %}bg-danger
                                 {% elseif task.priority == 'urgent' %}bg-dark
                                 {% endif %}">
@@ -92,28 +60,28 @@
                     </div>
 
                     {% if task.description %}
-                    <div class="mb-3">
-                        <h5 class="text-muted mb-2">Description</h5>
-                        <p class="mb-0">{{ task.description|nl2br }}</p>
+                    <div class="mb-4">
+                        <h5 class="text-muted fs-6 fw-medium mb-2">Description</h5>
+                        <p class="mb-0 text-break">{{ task.description|nl2br }}</p>
                     </div>
                     {% endif %}
 
-                    <div class="row">
+                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <h5 class="text-muted mb-2">Projet</h5>
+                            <h5 class="text-muted fs-6 fw-medium mb-2">Projet</h5>
                             <p class="mb-0">
-                                <a href="{{ path('app_project_show', {'id': task.project.id}) }}" class="text-decoration-none">
+                                <a href="{{ path('app_project_show', {'id': task.project.id}) }}" class="text-decoration-none text-primary">
                                     <i class="fas fa-project-diagram me-1"></i>{{ task.project.name }}
                                 </a>
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h5 class="text-muted mb-2">Assigné à</h5>
+                            <h5 class="text-muted fs-6 fw-medium mb-2">Assigné à</h5>
                             <p class="mb-0">
                                 {% if task.assignedTo %}
                                     <i class="fas fa-user me-1"></i>
                                     {{ task.assignedTo.firstName }} {{ task.assignedTo.lastName }}
-                                    <small class="text-muted">({{ task.assignedTo.email }})</small>
+                                    <small class="text-muted d-block">{{ task.assignedTo.email }}</small>
                                 {% else %}
                                     <span class="text-muted">Non assigné</span>
                                 {% endif %}
@@ -122,20 +90,20 @@
                     </div>
 
                     {% if task.dueDate %}
-                    <div class="mt-3">
-                        <h5 class="text-muted mb-2">Date d'échéance</h5>
+                    <div class="mb-4">
+                        <h5 class="text-muted fs-6 fw-medium mb-2">Date d'échéance</h5>
                         <p class="mb-0">
                             <i class="fas fa-calendar-alt me-1"></i>
                             {{ task.dueDate|date('d/m/Y H:i') }}
                             {% if task.dueDate < date() and task.status != 'done' %}
-                                <span class="badge bg-danger ms-2">En retard</span>
+                                <span class="badge bg-danger ms-2 px-3 py-2">En retard</span>
                             {% endif %}
                         </p>
                     </div>
                     {% endif %}
 
-                    <div class="mt-3">
-                        <h5 class="text-muted mb-2">Informations</h5>
+                    <div>
+                        <h5 class="text-muted fs-6 fw-medium mb-2">Informations</h5>
                         <p class="mb-0">
                             <small class="text-muted">
                                 <i class="fas fa-clock me-1"></i>Créée le {{ task.createdAt|date('d/m/Y à H:i') }}
@@ -149,23 +117,23 @@
             </div>
 
             <!-- Section Commentaires -->
-            <div class="card shadow">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-light py-3 rounded-top-3">
+                    <h5 class="fs-5 fw-medium mb-0">
                         <i class="fas fa-comments me-2"></i>Commentaires ({{ task.comments|length }})
                     </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3 p-md-4">
                     <!-- Formulaire d'ajout de commentaire -->
                     <div class="mb-4">
-                        {{ form_start(commentForm, {'action': path('app_comment_new', {'taskId': task.id}), 'method': 'POST'}) }}
+                        {{ form_start(commentForm, {'action': path('app_comment_new', {'taskId': task.id}), 'method': 'POST', 'attr': {'class': 'needs-validation', 'novalidate': ''}}) }}
                             <div class="mb-3">
-                                {{ form_label(commentForm.content, 'Ajouter un commentaire', {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                                {{ form_widget(commentForm.content, {'attr': {'class': 'form-control', 'rows': '3', 'placeholder': 'Écrivez votre commentaire...'}}) }}
+                                {{ form_label(commentForm.content, 'Ajouter un commentaire', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                {{ form_widget(commentForm.content, {'attr': {'class': 'form-control rounded-2', 'rows': '3', 'placeholder': 'Écrivez votre commentaire...'}}) }}
                                 {{ form_errors(commentForm.content) }}
                             </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane me-2"></i>Publier le commentaire
+                            <button type="submit" class="btn btn-primary btn-sm rounded-2">
+                                <i class="fas fa-paper-plane me-2"></i>Publier
                             </button>
                         {{ form_end(commentForm) }}
                     </div>
@@ -174,28 +142,28 @@
                     {% if task.comments|length > 0 %}
                         <div class="comments-list">
                             {% for comment in task.comments %}
-                                <div class="comment-item border-bottom pb-3 mb-3">
+                                <div class="comment-item border-bottom py-3">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                                <i class="fas fa-user"></i>
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px; font-size: 16px;">
+                                                {{ comment.author.firstName|slice(0, 1)|upper }}
                                             </div>
                                             <div>
-                                                <h6 class="mb-0">{{ comment.author.firstName }} {{ comment.author.lastName }}</h6>
+                                                <h6 class="fw-medium mb-0">{{ comment.author.firstName }} {{ comment.author.lastName }}</h6>
                                                 <small class="text-muted">{{ comment.createdAt|date('d/m/Y à H:i') }}</small>
                                             </div>
                                         </div>
                                         {% if app.user == comment.author or is_granted('ROLE_ADMIN') %}
                                             <div class="dropdown">
-                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="{{ path('app_comment_edit', {'id': comment.id}) }}">
+                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                                    <li><a class="dropdown-item py-2" href="{{ path('app_comment_edit', {'id': comment.id}) }}">
                                                         <i class="fas fa-edit me-2"></i>Modifier
                                                     </a></li>
                                                     <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-danger" href="{{ path('app_comment_delete', {'id': comment.id}) }}" 
+                                                    <li><a class="dropdown-item text-danger py-2" href="{{ path('app_comment_delete', {'id': comment.id}) }}" 
                                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')">
                                                         <i class="fas fa-trash me-2"></i>Supprimer
                                                     </a></li>
@@ -203,16 +171,16 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                    <div class="comment-content">
-                                        <p class="mb-0">{{ comment.content|nl2br }}</p>
+                                    <div class="comment-content ms-5">
+                                        <p class="mb-0 text-break">{{ comment.content|nl2br }}</p>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                     {% else %}
                         <div class="text-center text-muted py-4">
-                            <i class="fas fa-comments fa-3x mb-3"></i>
-                            <p>Aucun commentaire pour le moment.<br>Soyez le premier à commenter !</p>
+                            <i class="fas fa-comments fa-2x mb-3"></i>
+                            <p class="mb-0">Aucun commentaire pour le moment.<br>Soyez le premier à commenter !</p>
                         </div>
                     {% endif %}
                 </div>
@@ -221,22 +189,22 @@
 
         <div class="col-md-4">
             <!-- Actions rapides -->
-            <div class="card shadow mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-light py-3 rounded-top-3">
+                    <h5 class="fs-5 fw-medium mb-0">
                         <i class="fas fa-cogs me-2"></i>Actions
                     </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3 p-md-4">
                     <div class="d-grid gap-2">
-                        <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-primary">
+                        <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-primary btn-sm rounded-2">
                             <i class="fas fa-edit me-2"></i>Modifier la tâche
                         </a>
-                        <a href="{{ path('app_project_show', {'id': task.project.id}) }}" class="btn btn-outline-primary">
+                        <a href="{{ path('app_project_show', {'id': task.project.id}) }}" class="btn btn-outline-primary btn-sm rounded-2">
                             <i class="fas fa-project-diagram me-2"></i>Voir le projet
                         </a>
                         {% if task.assignedTo %}
-                        <a href="#" class="btn btn-outline-info">
+                        <a href="#" class="btn btn-outline-info btn-sm rounded-2">
                             <i class="fas fa-user me-2"></i>Contacter l'assigné
                         </a>
                         {% endif %}
@@ -245,22 +213,22 @@
             </div>
 
             <!-- Statistiques -->
-            <div class="card shadow">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-light py-3 rounded-top-3">
+                    <h5 class="fs-5 fw-medium mb-0">
                         <i class="fas fa-chart-bar me-2"></i>Statistiques
                     </h5>
                 </div>
-                <div class="card-body">
-                    <div class="row text-center">
+                <div class="card-body p-3 p-md-4">
+                    <div class="row text-center g-3">
                         <div class="col-6">
-                            <div class="border-end">
-                                <h4 class="text-primary mb-0">{{ task.comments|length }}</h4>
+                            <div class="border-end pe-3">
+                                <h4 class="text-primary mb-1">{{ task.comments|length }}</h4>
                                 <small class="text-muted">Commentaires</small>
                             </div>
                         </div>
                         <div class="col-6">
-                            <h4 class="text-success mb-0">
+                            <h4 class="text-success mb-1">
                                 {% if task.status == 'done' %}100%
                                 {% elseif task.status == 'review' %}75%
                                 {% elseif task.status == 'in_progress' %}50%
@@ -275,4 +243,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

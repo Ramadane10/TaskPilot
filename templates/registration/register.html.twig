@@ -3,34 +3,33 @@
 {% block title %}Inscription - TaskPilot{% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow">
-            <div class="card-body p-5">
+<div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <h2 class="fw-bold text-primary">
-                        <i class="fas fa-user-plus me-2"></i>Inscription
+                    <h2 class="fw-bold text-primary mb-2">Inscription
                     </h2>
-                    <p class="text-muted">Créez votre compte TaskPilot</p>
+                    <p class="text-muted mb-0">Créez votre compte TaskPilot</p>
                 </div>
 
-                {{ form_start(registrationForm) }}
-                    <div class="row">
+                {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': ''}}) }}
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            {{ form_row(registrationForm.firstName) }}
+                            {{ form_row(registrationForm.firstName, {'attr': {'class': 'form-control form-control-lg rounded-2'}}) }}
                         </div>
                         <div class="col-md-6">
-                            {{ form_row(registrationForm.lastName) }}
+                            {{ form_row(registrationForm.lastName, {'attr': {'class': 'form-control form-control-lg rounded-2'}}) }}
                         </div>
                     </div>
 
-                    {{ form_row(registrationForm.email) }}
-                    {{ form_row(registrationForm.plainPassword.first) }}
-                    {{ form_row(registrationForm.plainPassword.second) }}
+                    {{ form_row(registrationForm.email, {'attr': {'class': 'form-control form-control-lg rounded-2'}}) }}
+                    {{ form_row(registrationForm.plainPassword.first, {'attr': {'class': 'form-control form-control-lg rounded-2'}}) }}
+                    {{ form_row(registrationForm.plainPassword.second, {'attr': {'class': 'form-control form-control-lg rounded-2'}}) }}
 
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Créer mon compte
+                        <button type="submit" class="btn btn-primary btn-lg rounded-2">
+                            Créer mon compte
                         </button>
                     </div>
                 {{ form_end(registrationForm) }}
@@ -38,10 +37,10 @@
                 <hr class="my-4">
 
                 <div class="text-center">
-                    <p class="mb-0">
+                    <p class="text-muted mb-0">
                         Déjà un compte ? 
-                        <a href="{{ path('app_login') }}" class="text-decoration-none">
-                            <i class="fas fa-sign-in-alt me-1"></i>Se connecter
+                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-medium text-primary">
+                            Se connecter
                         </a>
                     </p>
                 </div>

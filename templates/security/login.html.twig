@@ -3,44 +3,48 @@
 {% block title %}Connexion - TaskPilot{% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow">
-            <div class="card-body p-5">
+<div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <h2 class="fw-bold text-primary">
-                        <i class="fas fa-sign-in-alt me-2"></i>Connexion
+                    <h2 class="fw-bold text-primary mb-2">
+                        
+                        Connexion
                     </h2>
-                    <p class="text-muted">Connectez-vous à votre compte TaskPilot</p>
+                    <p class="text-muted mb-0">Connectez-vous à votre compte TaskPilot</p>
                 </div>
 
-                <form method="post">
+                <form method="post" class="needs-validation" novalidate>
                     {% if error %}
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>{{ error.messageKey|trans(error.messageData, 'security') }}
+                        <div class="alert alert-danger d-flex align-items-center rounded-3 shadow-sm" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
                         </div>
                     {% endif %}
 
                     <div class="mb-3">
-                        <label for="inputEmail" class="form-label">Email</label>
-                        <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                        <label for="inputEmail" class="form-label fw-medium">Adresse e-mail</label>
+                        <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" 
+                               class="form-control form-control-lg rounded-2" autocomplete="email" required autofocus>
                     </div>
 
                     <div class="mb-3">
-                        <label for="inputPassword" class="form-label">Mot de passe</label>
-                        <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                        <label for="inputPassword" class="form-label fw-medium">Mot de passe</label>
+                        <input type="password" name="_password" id="inputPassword" 
+                               class="form-control form-control-lg rounded-2" autocomplete="current-password" required>
                     </div>
 
-                    <div class="mb-3 form-check">
+                    <div class="mb-4 form-check">
                         <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
-                        <label class="form-check-label" for="remember_me">
-                            Se souvenir de moi
-                        </label>
+                        <label class="form-check-label text-muted" for="remember_me">Se souvenir de moi</label>
                     </div>
-<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                    <div class="d-grid">
-                        <button class="btn btn-primary btn-lg" type="submit">
-                            <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="d-grid mb-4">
+                        <button class="btn btn-primary btn-lg rounded-2" type="submit">
+                            Se connecter
                         </button>
                     </div>
                 </form>
@@ -48,10 +52,10 @@
                 <hr class="my-4">
 
                 <div class="text-center">
-                    <p class="mb-0">
+                    <p class="text-muted mb-0">
                         Pas encore de compte ? 
-                        <a href="{{ path('app_register') }}" class="text-decoration-none">
-                            <i class="fas fa-user-plus me-1"></i>S'inscrire
+                        <a href="{{ path('app_register') }}" class="text-decoration-none fw-medium text-primary">
+                            S'inscrire
                         </a>
                     </p>
                 </div>

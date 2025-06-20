@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - TaskPilot{% endblock %}
+
+{% block body %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-0">
+            <i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard
+        </h1>
+        <p class="text-muted">Bienvenue {{ user.firstName }} {{ user.lastName }} !</p>
+    </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.totalProjects }}</h4>
+                        <p class="mb-0">Projets</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-project-diagram fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.totalTasks }}</h4>
+                        <p class="mb-0">Tâches</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-tasks fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.completedTasks }}</h4>
+                        <p class="mb-0">Terminées</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.pendingTasks }}</h4>
+                        <p class="mb-0">En cours</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Projets récents -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-project-diagram me-2 text-primary"></i>Mes Projets
+                </h5>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_project_new') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i>Nouveau
+                    </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if projects|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for project in projects|slice(0, 5) %}
+                            <a href="{{ path('app_project_show', {'id': project.id}) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ project.name }}</h6>
+                                    <small class="text-muted">
+                                        {% if project.status == 'active' %}
+                                            <span class="badge bg-success">Actif</span>
+                                        {% elseif project.status == 'completed' %}
+                                            <span class="badge bg-info">Terminé</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Archivé</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <p class="mb-1 text-muted">{{ project.description|slice(0, 100) }}{% if project.description|length > 100 %}...{% endif %}</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ project.createdAt|date('d/m/Y') }}
+                                </small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% if projects|length > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_project_index') }}" class="btn btn-outline-primary btn-sm">
+                                Voir tous les projets
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted text-center py-3">
+                        <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                        Aucun projet pour le moment
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tâches récentes -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-tasks me-2 text-success"></i>Mes Tâches
+                </h5>
+                <a href="{{ path('app_task_new') }}" class="btn btn-success btn-sm">
+                    <i class="fas fa-plus me-1"></i>Nouvelle
+                </a>
+            </div>
+            <div class="card-body">
+                {% if tasks|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for task in tasks|slice(0, 5) %}
+                            <a href="{{ path('app_task_show', {'id': task.id}) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ task.title }}</h6>
+                                    <small class="text-muted">
+                                        {% if task.status == 'todo' %}
+                                            <span class="badge bg-secondary">À faire</span>
+                                        {% elseif task.status == 'in_progress' %}
+                                            <span class="badge bg-warning">En cours</span>
+                                        {% elseif task.status == 'review' %}
+                                            <span class="badge bg-info">En révision</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Terminé</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <p class="mb-1 text-muted">{{ task.description|slice(0, 100) }}{% if task.description|length > 100 %}...{% endif %}</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ task.createdAt|date('d/m/Y') }}
+                                    {% if task.project %}
+                                        <span class="ms-2">
+                                            <i class="fas fa-project-diagram me-1"></i>{{ task.project.name }}
+                                        </span>
+                                    {% endif %}
+                                </small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% if tasks|length > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_task_index') }}" class="btn btn-outline-success btn-sm">
+                                Voir toutes les tâches
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted text-center py-3">
+                        <i class="fas fa-clipboard-list fa-2x mb-2"></i><br>
+                        Aucune tâche pour le moment
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

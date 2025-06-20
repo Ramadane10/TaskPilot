@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle tâche{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-plus me-2"></i>Créer une nouvelle tâche
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                {{ form_label(form.title, 'Titre de la tâche', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le titre de la tâche'}}) }}
+                                {{ form_errors(form.title) }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                {{ form_label(form.priority, 'Priorité', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.priority, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.priority) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.status, 'Statut', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.status) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.dueDate, 'Date d\'échéance', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.dueDate, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.dueDate) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.project, 'Projet', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.project, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.project) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.assignedTo, 'Assigné à', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.assignedTo, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.assignedTo) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Décrivez la tâche...'}}) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Créer la tâche
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

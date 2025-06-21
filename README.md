@@ -105,14 +105,6 @@ php -S localhost:8000 -t public
    - Ouvrir http://localhost:8000
    - Créer un compte administrateur
 
-## 👤 Utilisation
-
-### Création d'un compte administrateur
-1. S'inscrire via le formulaire d'inscription
-2. Modifier manuellement le rôle en base de données :
-```sql
-UPDATE user SET roles = '["ROLE_ADMIN"]' WHERE email = 'votre@email.com';
-```
 
 ### Workflow typique
 1. **Créer un projet** (admin seulement)

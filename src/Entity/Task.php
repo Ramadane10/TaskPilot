@@ -46,7 +46,7 @@ class Task
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'task', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'task', cascade: ['remove'], orphanRemoval: true)]
     private Collection $comments;
 
     public function __construct()

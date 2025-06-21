@@ -5,11 +5,11 @@
 {% block body %}
 <div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
     <div class="col-12 col-md-6 col-lg-4">
-        <div class="card shadow-sm border-0 rounded-3">
+        <div class="card shadow border-0 rounded-4">
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <h2 class="fw-bold text-primary mb-2">
-                        
+                    
+                    <h2 class="fw-bold text-dark mb-2">
                         Connexion
                     </h2>
                     <p class="text-muted mb-0">Connectez-vous à votre compte TaskPilot</p>
@@ -17,33 +17,58 @@
 
                 <form method="post" class="needs-validation" novalidate>
                     {% if error %}
-                        <div class="alert alert-danger d-flex align-items-center rounded-3 shadow-sm" role="alert">
+                        <div class="alert alert-danger d-flex align-items-center rounded-3" role="alert">
                             <i class="fas fa-exclamation-circle me-2"></i>
                             <span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
                         </div>
                     {% endif %}
 
                     <div class="mb-3">
-                        <label for="inputEmail" class="form-label fw-medium">Adresse e-mail</label>
-                        <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" 
-                               class="form-control form-control-lg rounded-2" autocomplete="email" required autofocus>
+                        <label for="inputEmail" class="form-label fw-medium text-dark">E-mail</label>
+                        <div class="input-group">
+                            
+                            <input type="email" 
+                                   value="{{ last_username }}" 
+                                   name="_username" 
+                                   id="inputEmail" 
+                                   class="form-control border-start-0" 
+                                   autocomplete="email" 
+                                   required 
+                                   autofocus
+                                   placeholder="votre@email.com">
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="inputPassword" class="form-label fw-medium">Mot de passe</label>
-                        <input type="password" name="_password" id="inputPassword" 
-                               class="form-control form-control-lg rounded-2" autocomplete="current-password" required>
+                        <label for="inputPassword" class="form-label fw-medium text-dark">Mot de passe</label>
+                        <div class="input-group">
+                            
+                            <input type="password" 
+                                   name="_password" 
+                                   id="inputPassword" 
+                                   class="form-control border-start-0" 
+                                   autocomplete="current-password" 
+                                   required
+                                   placeholder="Votre mot de passe">
+                            <button class="btn" 
+                                    type="button" 
+                                    id="togglePassword">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-4 form-check">
                         <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
-                        <label class="form-check-label text-muted" for="remember_me">Se souvenir de moi</label>
+                        <label class="form-check-label text-muted" for="remember_me">
+                            Se souvenir de moi
+                        </label>
                     </div>
 
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                     <div class="d-grid mb-4">
-                        <button class="btn btn-primary btn-lg rounded-2" type="submit">
+                        <button class="btn btn-primary py-2 rounded-3 fw-medium" type="submit">
                             Se connecter
                         </button>
                     </div>
@@ -63,4 +88,95 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Empêcher le zoom sur iOS */
+input[type="email"], 
+input[type="password"] {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Améliorer l'apparence des inputs */
+.input-group-text {
+    border-color: #dee2e6;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: #0d6efd;
+}
+
+/* Animation pour le bouton toggle password */
+#togglePassword {
+    transition: all 0.2s ease;
+}
+
+#togglePassword:hover {
+    background-color: #e9ecef;
+}
+
+/* Améliorer l'apparence de la checkbox */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-check-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('inputPassword');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Change icon
+        if (type === 'text') {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    });
+    
+    // Auto-hide password after 5 seconds if visible
+    let passwordTimeout;
+    togglePassword.addEventListener('click', function() {
+        if (passwordInput.getAttribute('type') === 'text') {
+            clearTimeout(passwordTimeout);
+            passwordTimeout = setTimeout(() => {
+                passwordInput.setAttribute('type', 'password');
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }, 5000);
+        }
+    });
+    
+    // Prevent form submission if fields are empty
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const email = document.getElementById('inputEmail').value.trim();
+        const password = document.getElementById('inputPassword').value.trim();
+        
+        if (!email || !password) {
+            e.preventDefault();
+            alert('Veuillez remplir tous les champs obligatoires.');
+        }
+    });
+});
+</script>
 {% endblock %}

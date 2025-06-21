@@ -110,6 +110,13 @@ class ProjectController extends AbstractController
             $this->addFlash('warning', 'Vous ne pouvez supprimer qu\'un projet actif.');
             return $this->redirectToRoute('app_project_show', ['id' => $project->getId()]);
         }
+        
+        // Vérifier s'il y a des tâches dans le projet
+        if (!$project->getTasks()->isEmpty()) {
+            $taskCount = $project->getTasks()->count();
+            $this->addFlash('warning', "Ce projet contient {$taskCount} tâche(s). Toutes les tâches et leurs commentaires seront également supprimés.");
+        }
+        
         if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->request->get('_token'))) {
             $entityManager->remove($project);
             $entityManager->flush();

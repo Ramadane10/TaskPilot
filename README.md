@@ -75,7 +75,7 @@ TaskPilot est une application web moderne de gestion de projets développée ave
 
 1. **Cloner le projet**
 ```bash
-git clone [URL_DU_REPO]
+git clone https://github.com/Ramadane10/TaskPilot
 cd TaskPilot
 ```
 
@@ -136,35 +136,7 @@ L'application est entièrement responsive et s'adapte à tous les écrans :
 - **Tablet** : Adaptation des grilles et menus
 - **Mobile** : Navigation hamburger et cartes empilées
 
-## 🎯 Fonctionnalités Réalisées (10 points)
 
-✅ **Système d'authentification complet avec rôles** (2 points)
-- Inscription, connexion, déconnexion
-- Rôles ROLE_ADMIN et ROLE_USER
-
-✅ **CRUD complet des entités** (1 point)
-- Création, lecture, modification, suppression
-
-✅ **CRUD Project uniquement pour ROLE_ADMIN** (1 point)
-- Restrictions d'accès aux opérations de projets
-
-✅ **Relations entre entités** (1 point)
-- Relations OneToMany, ManyToOne, ManyToMany
-
-✅ **Affichage conditionnel** (1 point)
-- Interface adaptée selon les rôles et permissions
-
-✅ **Mise à jour métier** (2 points)
-- Changement de statut des tâches
-- Gestion des échéances
-
-✅ **Affichage éléments liés à l'utilisateur** (1 point)
-- Dashboard personnalisé
-- Projets et tâches de l'utilisateur
-
-✅ **Bonnes pratiques de programmation** (1 point)
-- Architecture MVC propre
-- Code organisé et documenté
 
 ## 🚀 Améliorations Futures
 
